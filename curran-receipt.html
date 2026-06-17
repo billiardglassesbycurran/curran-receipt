@@ -177,9 +177,12 @@
   }
 
   @media print {
-    body { padding: 0; background: #fff; }
+    @page { size: letter portrait; margin: 0.35in; }
+    html, body { margin: 0; padding: 0; background: #fff; }
+    body { zoom: 78%; transform-origin: top left; }
     .topbar { display: none !important; }
-    .card { border: none; }
+    .card { border: 1px solid #000; }
+    textarea.notes { min-height: 0; }
   }
 </style>
 </head>
