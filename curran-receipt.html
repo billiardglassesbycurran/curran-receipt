@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curran Opticians Receipt</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 8px;
+    background: #f4f4f4;
+    font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+    color: #000;
+  }
+  * { color: #000; }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .topbar-title { font-size: 15px; font-weight: 700; }
+  .topbar-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border: 1px solid #000;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #fff;
+    color: #000;
+  }
+  .btn-pdf { background: #000; color: #fff; }
+
+  .card {
+    background: #fff;
+    border: 1px solid #000;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .hdr {
+    padding: 14px 6px;
+    text-align: center;
+    border-bottom: 2px solid #000;
+  }
+  .hdr-since { font-size: 14px; font-style: italic; margin-bottom: 4px; }
+  .hdr-biz { font-size: clamp(16px, 5vw, 26px); font-weight: 900; text-transform: uppercase; margin-bottom: 6px; }
+  .hdr-addr { font-size: 14px; line-height: 1.5; font-weight: 600; }
+  .hdr-web { font-size: 13px; font-weight: 700; margin-top: 4px; }
+  .hdr-email { font-size: 13px; font-weight: 700; margin-top: 2px; }
+  a { color: #000; text-decoration: none; border-bottom: 1px solid #000; }
+
+  .datebar {
+    background: #f9f9f9;
+    border-bottom: 1px solid #999;
+    padding: 6px 10px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 6px;
+  }
+  .datebar label { font-size: 13px; font-weight: 700; }
+
+  .fbody { padding: 10px; }
+  .fgroup { margin-bottom: 10px; }
+  .flabel { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
+
+  input[type=text], input[type=date], input[type=number], textarea {
+    width: 100%;
+    border: 1px solid #999;
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 14px;
+    background: #fff;
+    color: #000;
+    outline: none;
+    font-weight: 700;
+    font-family: inherit;
+  }
+  input::placeholder, textarea::placeholder { color: #888; }
+  input[type=number] { -moz-appearance: textfield; }
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+  .sec-title {
+    font-size: 13px; font-weight: 700; text-transform: uppercase;
+    padding: 4px 0; border-bottom: 2px solid #000; margin-bottom: 8px;
+  }
+
+  .pgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  @media (max-width: 500px) { .pgrid { grid-template-columns: 1fr; } }
+
+  .prow {
+    display: flex; align-items: center;
+    border: 1px solid #999; border-radius: 4px; overflow: hidden; background: #fff;
+  }
+  .psym {
+    padding: 6px 8px; font-size: 14px; font-weight: 700;
+    background: #eee; border-right: 1px solid #999; flex-shrink: 0;
+  }
+  .prow input {
+    flex: 1; border: 0; padding: 6px 8px; font-size: 14px;
+    outline: none; background: transparent; text-align: right; min-width: 0; font-weight: 700;
+  }
+
+  input.misc-name {
+    text-transform: uppercase; font-size: 11px;
+    border-style: dashed; padding: 4px 6px; margin-bottom: 2px;
+  }
+  input.misc-name::placeholder { text-transform: none; color: #888; }
+
+  .totals {
+    background: #f9f9f9; border: 1px solid #999;
+    border-radius: 4px; padding: 8px 10px; margin-bottom: 12px;
+  }
+  .trow {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 4px 0; border-bottom: 1px solid #ccc; gap: 6px;
+  }
+  .trow:last-child { border-bottom: 0; }
+  .tlabel { font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .tval { display: flex; align-items: center; gap: 4px; }
+  .tval span { font-size: 13px; font-weight: 700; }
+  .tval input {
+    border: 1px solid #999; border-radius: 4px; padding: 4px 8px;
+    font-size: 14px; font-weight: 700; outline: none; width: 110px; text-align: right;
+  }
+  .tval input[readonly] { background: #eee; }
+
+  .discrow {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 0; border-bottom: 1px solid #ccc; flex-wrap: wrap;
+  }
+  .discrow input.disclabel { font-size: 14px; }
+  .dash { font-size: 16px; font-weight: 700; flex-shrink: 0; }
+
+  .grand .tlabel { font-size: 15px; text-transform: uppercase; }
+  .grand .tval input { font-size: 16px; border: 2px solid #000; width: 130px; }
+
+  .payrow {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 8px; margin-top: 6px; border-top: 1px solid #ccc; flex-wrap: wrap; gap: 8px;
+  }
+  .payopts { display: flex; gap: 12px; flex-wrap: wrap; }
+  .citem {
+    display: flex; align-items: center; gap: 6px; font-size: 13px;
+    padding: 2px 0; cursor: pointer; user-select: none; font-weight: 700;
+  }
+  .citem input[type=checkbox] {
+    width: 14px; height: 14px; cursor: pointer; accent-color: #000;
+    flex-shrink: 0; border: none; padding: 0;
+  }
+
+  .ogrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; margin-bottom: 12px; }
+  .ocard { background: #fff; border: 1px solid #999; border-radius: 4px; padding: 6px 8px; }
+  .otitle, .otitle-sub {
+    font-size: 12px; font-weight: 700; border-bottom: 1px solid #999;
+    padding-bottom: 3px; margin-bottom: 4px;
+  }
+  .otitle-sub { margin-top: 8px; }
+
+  textarea.notes { min-height: 56px; resize: vertical; }
+
+  .promo-line {
+    text-align: center; font-size: 12px; font-weight: 700;
+    padding: 8px 10px; border-top: 1px solid #ccc; margin-top: 4px;
+  }
+
+  @media print {
+    body { padding: 0; background: #fff; }
+    .topbar { display: none !important; }
+    .card { border: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title">👓 Curran Opticians &mdash; Eyewear Receipt</div>
+  <div class="topbar-btns">
+    <button class="btn" id="btnClear" type="button">🗑️ Clear</button>
+    <button class="btn btn-pdf" id="btnPrint" type="button">🖨️ Print / Save as PDF</button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="hdr">
+    <div class="hdr-since">&mdash; Since 1952 &mdash;</div>
+    <div class="hdr-biz">William J. Curran &amp; Son Opticians Inc.</div>
+    <div class="hdr-addr">
+      3025 Garrett Road &bull; Drexel Hill, PA 19026<br>
+      (610) 623-4129 &nbsp;|&nbsp; Fax: (610) 623-1664 &nbsp;|&nbsp; ID# 99-0735948
+    </div>
+    <div class="hdr-web">
+      <a href="https://www.williamcurranopticians.com" target="_blank">williamcurranopticians.com</a>
+      &nbsp;&bull;&nbsp;
+      <a href="https://www.billiardglasses.com" target="_blank">billiardglasses.com</a>
+    </div>
+    <div class="hdr-email">billcurran2020@gmail.com</div>
+  </div>
+
+  <div class="datebar">
+    <label for="rDate">ORDER DATE:</label>
+    <input type="date" id="rDate" style="width:auto;" />
+  </div>
+
+  <div class="fbody">
+    <div class="fgroup">
+      <label class="flabel" for="customer">Eyewear For</label>
+      <input type="text" id="customer" placeholder="Customer Name" />
+    </div>
+
+    <div class="sec-title">💲 Pricing</div>
+    <div class="pgrid">
+      <div><label class="flabel">Frame</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="0.00" class="pnum" /></div></div>
+      <div><label class="flabel">Single Vision</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="0.00" class="pnum" /></div></div>
+      <div><label class="flabel">Bifocals</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="0.00" class="pnum" /></div></div>
+      <div><label class="flabel">Progressive</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="0.00" class="pnum" /></div></div>
+      <div><label class="flabel">Transitions&reg;</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="0.00" class="pnum" /></div></div>
+      <div><label class="flabel">A/R Coating</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="0.00" class="pnum" /></div></div>
+      <div><label class="flabel">Protection Plan</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="0.00" class="pnum" /></div></div>
+      <div><input class="misc-name" type="text" placeholder="Misc. Item 1" /><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="0.00" class="pnum" /></div></div>
+      <div><input class="misc-name" type="text" placeholder="Misc. Item 2" /><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="0.00" class="pnum" /></div></div>
+      <div><label class="flabel">Shipping</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="0.00" class="pnum" /></div></div>
+    </div>
+
+    <div class="totals">
+      <div class="trow">
+        <span class="tlabel">Sub Total</span>
+        <div class="tval"><span>$</span><input type="text" id="subtotal" readonly placeholder="0.00" tabindex="-1" /></div>
+      </div>
+      <div class="discrow">
+        <input type="text" class="disclabel" id="discLbl" placeholder="Discount / Insurance" style="flex:1;min-width:120px;" />
+        <span class="dash">&mdash;</span>
+        <div class="tval"><span>$</span><input type="number" id="discount" min="0" step="0.01" placeholder="0.00" style="width:110px;" /></div>
+      </div>
+      <div class="trow grand">
+        <span class="tlabel">Total Paid</span>
+        <div class="tval"><span>$</span><input type="text" id="totalPaid" readonly placeholder="0.00" tabindex="-1" /></div>
+      </div>
+      <div class="payrow">
+        <span class="tlabel">Payment Method:</span>
+        <div class="payopts">
+          <label class="citem"><input type="checkbox" /> Cash</label>
+          <label class="citem"><input type="checkbox" /> Card</label>
+          <label class="citem"><input type="checkbox" /> Check</label>
+          <label class="citem"><input type="checkbox" /> HSA / FSA</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-title">✅ Lens Options</div>
+    <div class="ogrid">
+      <div class="ocard">
+        <div class="otitle">Lens Material</div>
+        <label class="citem"><input type="checkbox" /> Poly</label>
+        <label class="citem"><input type="checkbox" /> Trivex</label>
+        <label class="citem"><input type="checkbox" /> Hi-Index</label>
+      </div>
+      <div class="ocard">
+        <div class="otitle">Sun</div>
+        <label class="citem"><input type="checkbox" /> Polarized</label>
+        <div class="otitle-sub">Lens Design</div>
+        <label class="citem"><input type="checkbox" /> Standard</label>
+        <label class="citem"><input type="checkbox" /> Digital</label>
+      </div>
+      <div class="ocard">
+        <div class="otitle">Types of Transitions</div>
+        <label class="citem"><input type="checkbox" /> Gen - S</label>
+        <label class="citem"><input type="checkbox" /> X-Active Polar</label>
+        <div class="otitle-sub">Prism</div>
+        <label class="citem"><input type="checkbox" /> Prism</label>
+      </div>
+      <div class="ocard">
+        <div class="otitle">Types of A/R</div>
+        <label class="citem"><input type="checkbox" /> Standard</label>
+        <label class="citem"><input type="checkbox" /> Blue Light Blocker</label>
+      </div>
+    </div>
+
+    <div class="sec-title">📝 Notes</div>
+    <div class="fgroup">
+      <textarea class="notes" id="notes" placeholder="Additional notes or order details..."></textarea>
+    </div>
+
+    <div class="promo-line">$100 OFF on second pair if purchased within 30 days from date above.</div>
+  </div>
+</div>
+
+<script>
+  var today = new Date().toISOString().split('T')[0];
+  document.getElementById('rDate').value = today;
+
+  function recalc() {
+    var sub = 0;
+    document.querySelectorAll('.pnum').forEach(function(el) {
+      sub += parseFloat(el.value) || 0;
+    });
+    var disc = parseFloat(document.getElementById('discount').value) || 0;
+    var total = Math.max(sub - disc, 0);
+    document.getElementById('subtotal').value = sub > 0 ? sub.toFixed(2) : '';
+    document.getElementById('totalPaid').value = (sub > 0 || disc > 0) ? total.toFixed(2) : '';
+  }
+
+  document.querySelectorAll('.pnum').forEach(function(el) {
+    el.addEventListener('input', recalc);
+    el.addEventListener('blur', function() {
+      if (this.value) this.value = parseFloat(this.value).toFixed(2);
+    });
+  });
+
+  document.getElementById('discount').addEventListener('input', recalc);
+  document.getElementById('discount').addEventListener('blur', function() {
+    if (this.value) this.value = parseFloat(this.value).toFixed(2);
+  });
+
+  document.getElementById('btnClear').addEventListener('click', function() {
+    if (!confirm('Clear all fields?')) return;
+    document.querySelectorAll('input[type=text], input[type=number], textarea').forEach(function(el) {
+      el.value = '';
+    });
+    document.querySelectorAll('input[type=checkbox]').forEach(function(el) {
+      el.checked = false;
+    });
+    document.getElementById('rDate').value = today;
+    recalc();
+  });
+
+  document.getElementById('btnPrint').addEventListener('click', function() {
+    window.print();
+  });
+</script>
+</body>
+</html>
