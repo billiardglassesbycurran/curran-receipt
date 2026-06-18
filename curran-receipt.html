@@ -27,6 +27,7 @@
   .topbar-btns { display: flex; gap: 6px; flex-wrap: wrap; }
 
   .btn {
+    touch-action: manipulation;
     display: inline-flex;
     align-items: center;
     gap: 4px;
@@ -39,7 +40,7 @@
     background: #fff;
     color: #000;
   }
-  .btn-pdf { background: #000; color: #fff; }
+  .btn-pdf { background: #000; color: #fff !important; -webkit-text-fill-color: #fff !important; }
 
   .card {
     background: #fff;
@@ -80,14 +81,17 @@
     border: 1px solid #999;
     border-radius: 4px;
     padding: 6px 8px;
-    font-size: 14px;
+    font-size: 16px; /* 16px prevents iOS Safari auto-zoom on focus */
     background: #fff;
     color: #000;
     outline: none;
     font-weight: 700;
     font-family: inherit;
+    -webkit-appearance: none;
+    appearance: none;
   }
-  input::placeholder, textarea::placeholder { color: #888; }
+  input::placeholder, textarea::placeholder { color: #888; -webkit-text-fill-color: #888; }
+  input, textarea, select { -webkit-text-fill-color: #000; }
   input[type=number] { -moz-appearance: textfield; }
   input[type=number]::-webkit-inner-spin-button,
   input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
@@ -109,12 +113,13 @@
     background: #eee; border-right: 1px solid #999; flex-shrink: 0;
   }
   .prow input {
-    flex: 1; border: 0; padding: 6px 8px; font-size: 14px;
+    flex: 1; border: 0; padding: 6px 8px; font-size: 16px;
     outline: none; background: transparent; text-align: right; min-width: 0; font-weight: 700;
+    -webkit-appearance: none; appearance: none;
   }
 
   input.misc-name {
-    text-transform: uppercase; font-size: 11px;
+    text-transform: uppercase; font-size: 16px;
     border-style: dashed; padding: 4px 6px; margin-bottom: 2px;
   }
   input.misc-name::placeholder { text-transform: none; color: #888; }
@@ -129,11 +134,11 @@
   }
   .trow:last-child { border-bottom: 0; }
   .tlabel { font-size: 13px; font-weight: 700; flex-shrink: 0; }
-  .tval { display: flex; align-items: center; gap: 4px; }
+  .tval { display: flex; align-items: center; gap: 4px; min-width: 0; }
   .tval span { font-size: 13px; font-weight: 700; }
   .tval input {
     border: 1px solid #999; border-radius: 4px; padding: 4px 8px;
-    font-size: 14px; font-weight: 700; outline: none; width: 110px; text-align: right;
+    font-size: 16px; font-weight: 700; outline: none; width: 110px; text-align: right;
   }
   .tval input[readonly] { background: #eee; }
 
@@ -141,7 +146,7 @@
     display: flex; align-items: center; gap: 6px;
     padding: 6px 0; border-bottom: 1px solid #ccc; flex-wrap: wrap;
   }
-  .discrow input.disclabel { font-size: 14px; }
+  .discrow input.disclabel { font-size: 16px; }
   .dash { font-size: 16px; font-weight: 700; flex-shrink: 0; }
 
   .grand .tlabel { font-size: 15px; text-transform: uppercase; }
@@ -159,6 +164,10 @@
   .citem input[type=checkbox] {
     width: 14px; height: 14px; cursor: pointer; accent-color: #000;
     flex-shrink: 0; border: none; padding: 0;
+    -webkit-appearance: checkbox !important;
+    appearance: checkbox !important;
+    border-radius: 0;
+    font-size: inherit;
   }
 
   .ogrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; margin-bottom: 12px; }
@@ -177,12 +186,84 @@
   }
 
   @media print {
-    @page { size: letter portrait; margin: 0.35in; }
-    html, body { margin: 0; padding: 0; background: #fff; }
-    body { zoom: 78%; transform-origin: top left; }
+    @page { size: letter portrait; margin: 0.3in; }
+
+    html {
+      /* Safari/WebKit: zoom on html scales entire page cleanly */
+      zoom: 62%;
+    }
+
+    body {
+      margin: 0 !important;
+      padding: 0 !important;
+      background: #fff !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* Force all text black for ink saving - Safari sometimes ignores this */
+    * {
+      color: #000 !important;
+      -webkit-text-fill-color: #000 !important;
+      background-color: transparent !important;
+    }
+
+    /* Restore specific backgrounds needed for readability */
+    .psym { background-color: #eee !important; }
+    .totals { background-color: #f9f9f9 !important; }
+    .tval input[readonly] { background-color: #eee !important; }
+    .grand .tval input { border: 2px solid #000 !important; }
+    .datebar { background-color: #f9f9f9 !important; }
+
+    /* Keep button text white — hidden anyway */
     .topbar { display: none !important; }
-    .card { border: 1px solid #000; }
-    textarea.notes { min-height: 0; }
+
+    .card {
+      border: 1px solid #000 !important;
+      overflow: visible !important;
+      -webkit-box-shadow: none !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+    }
+
+    /* Tighten spacing */
+    .fbody { padding: 6px !important; }
+    .pgrid { gap: 4px !important; margin-bottom: 6px !important; }
+    .ogrid { gap: 4px !important; margin-bottom: 6px !important; }
+    .fgroup { margin-bottom: 4px !important; }
+    .totals { margin-bottom: 6px !important; padding: 4px 8px !important; }
+    .trow { padding: 2px 0 !important; }
+    .discrow { padding: 3px 0 !important; }
+    .sec-title { padding: 2px 0 !important; margin-bottom: 4px !important; }
+    .hdr { padding: 8px 6px !important; }
+    .ocard { padding: 4px 6px !important; }
+    .promo-line { padding: 4px 8px !important; }
+
+    /* Safari textarea fix - collapses height properly */
+    textarea.notes {
+      min-height: 0 !important;
+      height: 36px !important;
+      overflow: hidden !important;
+      resize: none !important;
+    }
+
+    /* Prevent page breaks inside key sections */
+    .totals, .ogrid, .hdr, .pgrid {
+      page-break-inside: avoid;
+      -webkit-column-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    /* Safari: inputs need explicit border to show when printing */
+    input[type=text], input[type=number], input[type=date] {
+      border: 1px solid #999 !important;
+      -webkit-appearance: none !important;
+      appearance: none !important;
+    }
+
+    .prow input {
+      border: none !important;
+    }
   }
 </style>
 </head>
@@ -214,7 +295,7 @@
 
   <div class="datebar">
     <label for="rDate">ORDER DATE:</label>
-    <input type="date" id="rDate" style="width:auto;" />
+    <input type="date" id="rDate" style="width:auto;max-width:180px;" />
   </div>
 
   <div class="fbody">
@@ -319,17 +400,19 @@
     el.addEventListener('input', recalc);
     el.addEventListener('blur', function() {
       if (this.value) this.value = parseFloat(this.value).toFixed(2);
+      recalc();
     });
   });
 
   document.getElementById('discount').addEventListener('input', recalc);
   document.getElementById('discount').addEventListener('blur', function() {
     if (this.value) this.value = parseFloat(this.value).toFixed(2);
+    recalc();
   });
 
   document.getElementById('btnClear').addEventListener('click', function() {
     if (!confirm('Clear all fields?')) return;
-    document.querySelectorAll('input[type=text], input[type=number], textarea').forEach(function(el) {
+    document.querySelectorAll('input[type=text]:not([readonly]), input[type=number], textarea').forEach(function(el) {
       el.value = '';
     });
     document.querySelectorAll('input[type=checkbox]').forEach(function(el) {
