@@ -445,21 +445,25 @@
     recalc();
   });
 
-  document.getElementById('btnPrint').addEventListener('click', function(e) {
-    e.preventDefault();
-    // iOS standalone (home screen shortcut) blocks window.print() entirely
-    var isStandalone = ('standalone' in window.navigator && window.navigator.standalone);
-    if (isStandalone) {
-      alert('To print, open this page in Safari first.\n\nTap the Share button (□↑) then choose "Open in Safari", then press Print.');
-      return;
-    }
-    try {
-      window.print();
-    } catch(err) {
-      window.focus();
-      window.print();
-    }
-  });
+  // If running as a home screen app (standalone), reopen in Safari when Print is tapped
+  var isStandalone = ('standalone' in window.navigator && window.navigator.standalone);
+  if (isStandalone) {
+    document.getElementById('btnPrint').addEventListener('click', function(e) {
+      e.preventDefault();
+      // Open the same URL in Safari — Safari can print, standalone mode cannot
+      window.location.href = 'safari-https://billiardglassesbycurran.github.io/curran-receipt/curran-receipt.html';
+    });
+  } else {
+    document.getElementById('btnPrint').addEventListener('click', function(e) {
+      e.preventDefault();
+      try {
+        window.print();
+      } catch(err) {
+        window.focus();
+        window.print();
+      }
+    });
+  }
 </script>
 </body>
 </html>
