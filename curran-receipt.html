@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>Curran Opticians Receipt</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; }
@@ -193,6 +194,18 @@
       zoom: 62%;
     }
 
+    /* Chrome (Android + desktop): zoom not supported, use transform */
+    @supports not (zoom: 1) {
+      html {
+        zoom: unset;
+      }
+      body {
+        transform: scale(0.62);
+        transform-origin: top left;
+        width: calc(100% / 0.62);
+      }
+    }
+
     body {
       margin: 0 !important;
       padding: 0 !important;
@@ -252,6 +265,16 @@
       page-break-inside: avoid;
       -webkit-column-break-inside: avoid;
       break-inside: avoid;
+    }
+
+    /* Force entire document to one page — never allow a second page */
+    .card {
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+    body, html {
+      overflow: hidden !important;
+      max-height: 100vh !important;
     }
 
     /* Safari: inputs need explicit border to show when printing */
@@ -418,12 +441,21 @@
     document.querySelectorAll('input[type=checkbox]').forEach(function(el) {
       el.checked = false;
     });
-    document.getElementById('rDate').value = today;
+    document.getElementById('rDate').value = new Date().toISOString().split('T')[0];
     recalc();
   });
 
-  document.getElementById('btnPrint').addEventListener('click', function() {
-    window.print();
+  document.getElementById('btnPrint').addEventListener('click', function(e) {
+    e.preventDefault();
+    // iPadOS 17+ Safari requires print to be called synchronously
+    // with no intervening async or setTimeout
+    try {
+      window.print();
+    } catch(err) {
+      // Fallback: focus window first then print
+      window.focus();
+      window.print();
+    }
   });
 </script>
 </body>
