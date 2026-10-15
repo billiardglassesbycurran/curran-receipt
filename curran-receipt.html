@@ -447,12 +447,15 @@
 
   document.getElementById('btnPrint').addEventListener('click', function(e) {
     e.preventDefault();
-    // iPadOS 17+ Safari requires print to be called synchronously
-    // with no intervening async or setTimeout
+    // iOS standalone (home screen shortcut) blocks window.print() entirely
+    var isStandalone = ('standalone' in window.navigator && window.navigator.standalone);
+    if (isStandalone) {
+      alert('To print, open this page in Safari first.\n\nTap the Share button (□↑) then choose "Open in Safari", then press Print.');
+      return;
+    }
     try {
       window.print();
     } catch(err) {
-      // Fallback: focus window first then print
       window.focus();
       window.print();
     }
