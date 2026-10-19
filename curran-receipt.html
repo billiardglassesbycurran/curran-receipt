@@ -284,12 +284,8 @@
       border: none !important;
     }
 
-    /* Hide zero-value placeholder text on print */
-    input[type=number]:not(:focus)::placeholder {
-      color: transparent !important;
-      -webkit-text-fill-color: transparent !important;
-    }
-    input[type=number][value=""] {
+    /* Hide placeholder text on print */
+    input::placeholder, textarea::placeholder {
       color: transparent !important;
       -webkit-text-fill-color: transparent !important;
     }
@@ -350,7 +346,7 @@
     <div class="totals">
       <div class="trow">
         <span class="tlabel">Sub Total</span>
-        <div class="tval"><span>$</span><input type="text" id="subtotal" readonly placeholder="0.00" tabindex="-1" /></div>
+        <div class="tval"><span>$</span><input type="text" id="subtotal" readonly placeholder="" tabindex="-1" /></div>
       </div>
       <div class="discrow">
         <input type="text" class="disclabel" id="discLbl" placeholder="Discount / Insurance" style="flex:1;min-width:120px;" />
@@ -359,7 +355,7 @@
       </div>
       <div class="trow grand">
         <span class="tlabel">Total Paid</span>
-        <div class="tval"><span>$</span><input type="text" id="totalPaid" readonly placeholder="0.00" tabindex="-1" /></div>
+        <div class="tval"><span>$</span><input type="text" id="totalPaid" readonly placeholder="" tabindex="-1" /></div>
       </div>
       <div class="payrow">
         <span class="tlabel">Payment Method:</span>
@@ -451,25 +447,15 @@
     recalc();
   });
 
-  // If running as a home screen app (standalone), reopen in Safari when Print is tapped
-  var isStandalone = ('standalone' in window.navigator && window.navigator.standalone);
-  if (isStandalone) {
-    document.getElementById('btnPrint').addEventListener('click', function(e) {
-      e.preventDefault();
-      // Open the same URL in Safari — Safari can print, standalone mode cannot
-      window.location.href = 'safari-https://billiardglassesbycurran.github.io/curran-receipt/curran-receipt.html';
-    });
-  } else {
-    document.getElementById('btnPrint').addEventListener('click', function(e) {
-      e.preventDefault();
-      try {
-        window.print();
-      } catch(err) {
-        window.focus();
-        window.print();
-      }
-    });
-  }
+  document.getElementById('btnPrint').addEventListener('click', function(e) {
+    e.preventDefault();
+    try {
+      window.print();
+    } catch(err) {
+      window.focus();
+      window.print();
+    }
+  });
 </script>
 </body>
 </html>
