@@ -191,7 +191,7 @@
 
     html {
       /* Safari/WebKit: zoom on html scales entire page cleanly */
-      zoom: 62%;
+      zoom: 52%;
     }
 
     /* Chrome (Android + desktop): zoom not supported, use transform */
@@ -200,9 +200,9 @@
         zoom: unset;
       }
       body {
-        transform: scale(0.62);
+        transform: scale(0.52);
         transform-origin: top left;
-        width: calc(100% / 0.62);
+        width: calc(100% / 0.52);
       }
     }
 
@@ -272,10 +272,6 @@
       page-break-after: avoid !important;
       break-after: avoid !important;
     }
-    body, html {
-      overflow: hidden !important;
-      max-height: 100vh !important;
-    }
 
     /* Safari: inputs need explicit border to show when printing */
     input[type=text], input[type=number], input[type=date] {
@@ -286,6 +282,16 @@
 
     .prow input {
       border: none !important;
+    }
+
+    /* Hide zero-value placeholder text on print */
+    input[type=number]:not(:focus)::placeholder {
+      color: transparent !important;
+      -webkit-text-fill-color: transparent !important;
+    }
+    input[type=number][value=""] {
+      color: transparent !important;
+      -webkit-text-fill-color: transparent !important;
     }
   }
 </style>
@@ -329,16 +335,16 @@
 
     <div class="sec-title">💲 Pricing</div>
     <div class="pgrid">
-      <div><label class="flabel">Frame</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="0.00" class="pnum" /></div></div>
-      <div><label class="flabel">Single Vision</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="0.00" class="pnum" /></div></div>
-      <div><label class="flabel">Bifocals</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="0.00" class="pnum" /></div></div>
-      <div><label class="flabel">Progressive</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="0.00" class="pnum" /></div></div>
-      <div><label class="flabel">Transitions&reg;</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="0.00" class="pnum" /></div></div>
-      <div><label class="flabel">A/R Coating</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="0.00" class="pnum" /></div></div>
-      <div><label class="flabel">Protection Plan</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="0.00" class="pnum" /></div></div>
-      <div><input class="misc-name" type="text" placeholder="Misc. Item 1" /><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="0.00" class="pnum" /></div></div>
-      <div><input class="misc-name" type="text" placeholder="Misc. Item 2" /><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="0.00" class="pnum" /></div></div>
-      <div><label class="flabel">Shipping</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="0.00" class="pnum" /></div></div>
+      <div><label class="flabel">Frame</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="" class="pnum" /></div></div>
+      <div><label class="flabel">Single Vision</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="" class="pnum" /></div></div>
+      <div><label class="flabel">Bifocals</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="" class="pnum" /></div></div>
+      <div><label class="flabel">Progressive</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="" class="pnum" /></div></div>
+      <div><label class="flabel">Transitions&reg;</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="" class="pnum" /></div></div>
+      <div><label class="flabel">A/R Coating</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="" class="pnum" /></div></div>
+      <div><label class="flabel">Protection Plan</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="" class="pnum" /></div></div>
+      <div><input class="misc-name" type="text" placeholder="Misc. Item 1" /><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="" class="pnum" /></div></div>
+      <div><input class="misc-name" type="text" placeholder="Misc. Item 2" /><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="" class="pnum" /></div></div>
+      <div><label class="flabel">Shipping</label><div class="prow"><span class="psym">$</span><input type="number" min="0" step="0.01" placeholder="" class="pnum" /></div></div>
     </div>
 
     <div class="totals">
@@ -349,7 +355,7 @@
       <div class="discrow">
         <input type="text" class="disclabel" id="discLbl" placeholder="Discount / Insurance" style="flex:1;min-width:120px;" />
         <span class="dash">&mdash;</span>
-        <div class="tval"><span>$</span><input type="number" id="discount" min="0" step="0.01" placeholder="0.00" style="width:110px;" /></div>
+        <div class="tval"><span>$</span><input type="number" id="discount" min="0" step="0.01" placeholder="" style="width:110px;" /></div>
       </div>
       <div class="trow grand">
         <span class="tlabel">Total Paid</span>
